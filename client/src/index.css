@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand: #7c3aed;
+    --brand-light: #a78bfa;
+    --bg-primary: #07070f;
+    --bg-secondary: #0d0d1a;
+    --bg-card: #15152a;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    color-scheme: dark;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #7c3aed33 transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: #7c3aed55;
+    border-radius: 99px;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: #7c3aed99; }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-bg-primary text-text-primary font-sans;
+    background-image: radial-gradient(at 40% 20%, hsla(260, 80%, 12%, 0.5) 0px, transparent 50%),
+                      radial-gradient(at 80% 0%, hsla(240, 80%, 10%, 0.3) 0px, transparent 50%),
+                      radial-gradient(at 0% 50%, hsla(280, 70%, 10%, 0.3) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  code, pre {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  /* ─── Cards ─────────────────────────────── */
+  .glass-card {
+    @apply bg-bg-card/80 backdrop-blur-sm border border-bg-border rounded-2xl;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300;
+  }
+  .glass-card-hover:hover {
+    @apply border-brand-600/40;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(124, 58, 237, 0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+    transform: translateY(-2px);
+  }
+
+  /* ─── Buttons ──────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+           bg-gradient-to-r from-brand-600 to-brand-700 text-white
+           hover:from-brand-500 hover:to-brand-600
+           active:scale-95 transition-all duration-200
+           shadow-glow-sm hover:shadow-glow;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+           bg-bg-tertiary text-text-primary border border-bg-border
+           hover:bg-bg-hover hover:border-brand-600/50
+           active:scale-95 transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm
+           text-text-secondary hover:text-text-primary hover:bg-bg-hover
+           active:scale-95 transition-all duration-200;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm
+           bg-red-600/20 text-red-400 border border-red-600/30
+           hover:bg-red-600/30 hover:border-red-500/50
+           active:scale-95 transition-all duration-200;
+  }
+
+  /* ─── Badges ───────────────────────────── */
+  .badge-easy {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-green-500/15 text-green-400 border border-green-500/20;
+  }
+  .badge-medium {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-yellow-500/15 text-yellow-400 border border-yellow-500/20;
+  }
+  .badge-hard {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-red-500/15 text-red-400 border border-red-500/20;
+  }
+
+  /* ─── Status badges ───────────────────── */
+  .status-solved {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-green-500/15 text-green-400;
+  }
+  .status-attempted {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-yellow-500/15 text-yellow-400;
+  }
+  .status-not-started {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold
+           bg-bg-hover text-text-muted;
+  }
+
+  /* ─── Input ────────────────────────────── */
+  .input {
+    @apply w-full bg-bg-tertiary border border-bg-border rounded-xl px-4 py-2.5
+           text-text-primary placeholder-text-muted
+           focus:outline-none focus:border-brand-600/60 focus:ring-1 focus:ring-brand-600/30
+           transition-all duration-200 text-sm;
+  }
+
+  /* ─── Section heading ──────────────────── */
+  .section-title {
+    @apply text-xl font-display font-bold text-text-primary;
+  }
+  .section-subtitle {
+    @apply text-sm text-text-secondary mt-1;
+  }
+
+  /* ─── Gradient text ────────────────────── */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-purple-300;
+  }
+
+  /* ─── Progress bar ─────────────────────── */
+  .progress-bar {
+    @apply w-full h-2 bg-bg-hover rounded-full overflow-hidden;
+  }
+  .progress-bar-fill {
+    @apply h-full bg-gradient-to-r from-brand-600 to-brand-400 rounded-full transition-all duration-700 ease-out;
+  }
+
+  /* ─── Stat card ─────────────────────────── */
+  .stat-card {
+    @apply glass-card p-5 flex flex-col gap-2;
+  }
+  .stat-value {
+    @apply text-3xl font-display font-bold text-text-primary;
+  }
+  .stat-label {
+    @apply text-sm text-text-secondary font-medium;
+  }
+
+  /* ─── Sidebar ──────────────────────────── */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary
+           hover:text-text-primary hover:bg-bg-hover font-medium text-sm
+           transition-all duration-200 cursor-pointer relative;
+  }
+  .sidebar-item.active {
+    @apply text-brand-400 bg-brand-600/10 border border-brand-600/20;
+  }
+
+  /* ─── Table ────────────────────────────── */
+  .data-table {
+    @apply w-full text-sm;
+  }
+  .data-table th {
+    @apply px-4 py-3 text-left text-text-muted font-semibold uppercase text-xs tracking-wider border-b border-bg-border;
+  }
+  .data-table td {
+    @apply px-4 py-3.5 border-b border-bg-border/50;
+  }
+  .data-table tr:hover td {
+    @apply bg-bg-hover/30;
+  }
+
+  /* ─── Skeleton loader ──────────────────── */
+  .skeleton {
+    @apply bg-bg-hover rounded-xl animate-pulse;
+  }
+
+  /* ─── Tooltip ──────────────────────────── */
+  .tooltip {
+    @apply absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5
+           bg-bg-card border border-bg-border rounded-lg text-xs text-text-secondary
+           whitespace-nowrap pointer-events-none opacity-0 group-hover:opacity-100
+           transition-opacity duration-200 z-50 shadow-card;
+  }
+}
+
+/* ─── React Calendar Heatmap Overrides ──── */
+.react-calendar-heatmap .color-empty { fill: #1a1a32; }
+.react-calendar-heatmap .color-scale-1 { fill: #4c1d95; }
+.react-calendar-heatmap .color-scale-2 { fill: #6d28d9; }
+.react-calendar-heatmap .color-scale-3 { fill: #7c3aed; }
+.react-calendar-heatmap .color-scale-4 { fill: #8b5cf6; }
+.react-calendar-heatmap text { fill: #64748b; font-size: 8px; }
+.react-calendar-heatmap rect:hover { stroke: #a78bfa; stroke-width: 1; }
+
+/* ─── Recharts dark overrides ──── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #1e1e38;
+}
+.recharts-text { fill: #64748b; }
+.recharts-legend-item-text { color: #94a3b8 !important; }
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #15152a !important;
+  border: 1px solid #1e1e38 !important;
+  border-radius: 12px !important;
+  color: #f1f5f9 !important;
+}
+
+/* ─── Page transitions ─────────────── */
+.page-enter {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease-out;
+}
+
+/* ─── NProgress bar ─────────────── */
+#nprogress .bar {
+  background: #7c3aed !important;
+  height: 2px;
+}
+
+/* ─── Code syntax highlight ─────── */
+pre[class*="language-"],
+code[class*="language-"] {
+  background: #0d0d1a !important;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
