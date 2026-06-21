@@ -2,39 +2,79 @@ const cron = require('node-cron');
 const User = require('../models/User');
 const Contest = require('../models/Contest');
 const {
-  sendDailyReminder,
+  sendMorningReminder,
+  sendEveningReminder,
   sendInactivityWarning,
   sendContestReminder,
 } = require('../services/emailService');
 const dayjs = require('dayjs');
 
 const scheduleEmailJobs = () => {
-  // Daily at 8 PM – send reminders to users who haven't solved today
-  cron.schedule('0 20 * * *', async () => {
-    console.log('📧 Running daily reminder email job...');
+  // Morning Reminder: Daily at 10 AM – send to users who haven't completed their daily goal today
+  cron.schedule('0 10 * * *', async () => {
+    console.log('📧 Running morning reminder email job...');
     try {
       const today = dayjs().startOf('day').toDate();
 
-      const usersWithoutSolve = await User.find({
+      const usersToRemind = await User.find({
         role: 'student',
         isProfileComplete: true,
         emailNotifications: true,
         $or: [
           { lastSolvedDate: { $lt: today } },
           { lastSolvedDate: null },
-        ],
+          {
+            lastSolvedDate: { $gte: today },
+            $expr: { $lt: ['$problemsSolvedToday', '$dailyGoal'] }
+          }
+        ]
       }).limit(500);
 
       let sent = 0;
-      for (const user of usersWithoutSolve) {
-        await sendDailyReminder(user);
+      for (const user of usersToRemind) {
+        const solvedToday = (user.lastSolvedDate && dayjs(user.lastSolvedDate).isAfter(dayjs().startOf('day'))) ? user.problemsSolvedToday : 0;
+        await sendMorningReminder(user, solvedToday);
         sent++;
         // Throttle: 2 per second to respect API limits
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
-      console.log(`✅ Daily reminders sent: ${sent}`);
+      console.log(`✅ Morning reminders sent: ${sent}`);
     } catch (error) {
-      console.error('Daily email job error:', error);
+      console.error('Morning email job error:', error);
+    }
+  });
+
+  // Evening Reminder: Daily at 8:30 PM – final check for daily goals / streak saving
+  cron.schedule('30 20 * * *', async () => {
+    console.log('📧 Running evening reminder email job...');
+    try {
+      const today = dayjs().startOf('day').toDate();
+
+      const usersToRemind = await User.find({
+        role: 'student',
+        isProfileComplete: true,
+        emailNotifications: true,
+        $or: [
+          { lastSolvedDate: { $lt: today } },
+          { lastSolvedDate: null },
+          {
+            lastSolvedDate: { $gte: today },
+            $expr: { $lt: ['$problemsSolvedToday', '$dailyGoal'] }
+          }
+        ]
+      }).limit(500);
+
+      let sent = 0;
+      for (const user of usersToRemind) {
+        const solvedToday = (user.lastSolvedDate && dayjs(user.lastSolvedDate).isAfter(dayjs().startOf('day'))) ? user.problemsSolvedToday : 0;
+        await sendEveningReminder(user, solvedToday);
+        sent++;
+        // Throttle: 2 per second to respect API limits
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+      console.log(`✅ Evening reminders sent: ${sent}`);
+    } catch (error) {
+      console.error('Evening email job error:', error);
     }
   });
 

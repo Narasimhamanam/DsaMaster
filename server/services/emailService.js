@@ -14,20 +14,92 @@ const sendEmail = async ({ to, subject, html }) => {
   }
 };
 
-const sendDailyReminder = async (user) => {
+const sendMorningReminder = async (user, solvedToday) => {
   return sendEmail({
     to: user.email,
-    subject: '🔔 Daily DSA Challenge – Don\'t break your streak!',
+    subject: '🌅 Morning Boost: Ready for your Daily Coding Goal?',
     html: `
-      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #e2e8f0; padding: 40px; border-radius: 16px;">
-        <h1 style="color: #7c3aed; margin-bottom: 8px;">DSAMASTER</h1>
-        <h2 style="margin-bottom: 24px;">Hey ${user.name}! 👋</h2>
-        <p style="font-size: 16px; line-height: 1.6;">You haven't solved any problems today. Your current streak is <strong style="color: #f59e0b;">${user.currentStreak} days</strong>!</p>
-        <p style="font-size: 16px; line-height: 1.6;">Don't let it slip away. Even <strong>one problem</strong> keeps the momentum going.</p>
-        <a href="${process.env.CLIENT_URL}/roadmap" style="display: inline-block; margin-top: 24px; padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
-          Solve a Problem Now →
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #e2e8f0; padding: 40px; border-radius: 16px; border: 1px solid #1e1e38;">
+        <h1 style="color: #7c3aed; margin-bottom: 8px; font-size: 28px; font-weight: 800;">DSAMASTER</h1>
+        <h2 style="margin-bottom: 20px; font-size: 20px;">Rise & Code, ${user.name}! 🌅</h2>
+        <p style="font-size: 16px; line-height: 1.6;">It's a fresh day to sharpen your problem-solving skills and step closer to your dream placement.</p>
+        
+        <div style="background: #131326; padding: 20px; border-radius: 12px; margin: 24px 0; border: 1px solid #2a2a4e;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 6px 0; font-size: 15px; color: #94a3b8;">Current Streak:</td>
+              <td style="padding: 6px 0; font-size: 16px; font-weight: bold; color: #f59e0b; text-align: right;">🔥 ${user.currentStreak} days</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; font-size: 15px; color: #94a3b8;">Daily Goal:</td>
+              <td style="padding: 6px 0; font-size: 16px; font-weight: bold; color: #7c3aed; text-align: right;">🎯 ${user.dailyGoal} problems</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; font-size: 15px; color: #94a3b8;">Solved Today:</td>
+              <td style="padding: 6px 0; font-size: 16px; font-weight: bold; color: #e2e8f0; text-align: right;">${solvedToday} / ${user.dailyGoal}</td>
+            </tr>
+          </table>
+        </div>
+
+        <p style="font-size: 16px; line-height: 1.6;">Consistency is the key to cracking technical interviews. Jump into your roadmap and check off today's goal!</p>
+        
+        <a href="${process.env.CLIENT_URL}/roadmap" style="display: inline-block; margin-top: 24px; padding: 14px 28px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);">
+          Start Solving Now →
         </a>
-        <p style="margin-top: 32px; color: #94a3b8; font-size: 12px;">You're receiving this because you've enabled email reminders. <a href="${process.env.CLIENT_URL}/profile" style="color: #7c3aed;">Manage preferences</a></p>
+        
+        <p style="margin-top: 32px; color: #94a3b8; font-size: 12px; border-t: 1px solid #1e1e38; padding-top: 20px;">You're receiving this because you've enabled email notifications. You can disable them anytime in your <a href="${process.env.CLIENT_URL}/profile" style="color: #7c3aed; text-decoration: none;">Profile settings</a>.</p>
+      </div>
+    `,
+  });
+};
+
+const sendEveningReminder = async (user, solvedToday) => {
+  const isZero = solvedToday === 0;
+  const subject = isZero 
+    ? `🔥 Save your ${user.currentStreak}-day streak!` 
+    : `🎯 Close to your goal: Complete your daily DSA mission!`;
+  
+  const headerText = isZero 
+    ? `Don't break your streak! 😱` 
+    : `You're almost there! 🚀`;
+
+  const descriptionText = isZero
+    ? `Your coding streak is currently at <strong style="color: #f59e0b;">${user.currentStreak} days</strong>. If you don't solve at least one problem before midnight, your streak will reset to 0!`
+    : `You have solved <strong style="color: #7c3aed;">${solvedToday} out of ${user.dailyGoal}</strong> problems for today. You only need <strong style="color: #10b981;">${user.dailyGoal - solvedToday} more</strong> to complete your daily goal!`;
+
+  return sendEmail({
+    to: user.email,
+    subject,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #e2e8f0; padding: 40px; border-radius: 16px; border: 1px solid #1e1e38;">
+        <h1 style="color: #7c3aed; margin-bottom: 8px; font-size: 28px; font-weight: 800;">DSAMASTER</h1>
+        <h2 style="margin-bottom: 20px; font-size: 20px; color: ${isZero ? '#ef4444' : '#f59e0b'};">${headerText}</h2>
+        <p style="font-size: 16px; line-height: 1.6;">${descriptionText}</p>
+        
+        <div style="background: #131326; padding: 20px; border-radius: 12px; margin: 24px 0; border: 1px solid #2a2a4e;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 6px 0; font-size: 15px; color: #94a3b8;">Current Streak:</td>
+              <td style="padding: 6px 0; font-size: 16px; font-weight: bold; color: #f59e0b; text-align: right;">🔥 ${user.currentStreak} days</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; font-size: 15px; color: #94a3b8;">Daily Goal:</td>
+              <td style="padding: 6px 0; font-size: 16px; font-weight: bold; color: #7c3aed; text-align: right;">🎯 ${user.dailyGoal} problems</td>
+            </tr>
+            <tr>
+              <td style="padding: 6px 0; font-size: 15px; color: #94a3b8;">Solved Today:</td>
+              <td style="padding: 6px 0; font-size: 16px; font-weight: bold; color: #e2e8f0; text-align: right;">${solvedToday} / ${user.dailyGoal}</td>
+            </tr>
+          </table>
+        </div>
+
+        <p style="font-size: 16px; line-height: 1.6;">Don't let today's opportunity slip by. Head over to the platform and complete your daily challenge!</p>
+        
+        <a href="${process.env.CLIENT_URL}/roadmap" style="display: inline-block; margin-top: 24px; padding: 14px 28px; background: ${isZero ? 'linear-gradient(135deg, #ef4444, #b91c1c)' : 'linear-gradient(135deg, #f59e0b, #d97706)'}; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px ${isZero ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'};">
+          Solve Now →
+        </a>
+        
+        <p style="margin-top: 32px; color: #94a3b8; font-size: 12px; border-t: 1px solid #1e1e38; padding-top: 20px;">You're receiving this because you've enabled email notifications. You can disable them anytime in your <a href="${process.env.CLIENT_URL}/profile" style="color: #7c3aed; text-decoration: none;">Profile settings</a>.</p>
       </div>
     `,
   });
@@ -92,7 +164,8 @@ const sendAchievementEmail = async (user, achievement) => {
 
 module.exports = {
   sendEmail,
-  sendDailyReminder,
+  sendMorningReminder,
+  sendEveningReminder,
   sendInactivityWarning,
   sendContestReminder,
   sendAchievementEmail,
