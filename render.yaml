@@ -30,8 +30,9 @@ services:
         sync: false
 
   # Frontend Client Static Site
-  - type: static
+  - type: web
     name: dsamaster-client
+    runtime: static
     plan: free
     rootDir: client
     buildCommand: npm install && npm run build
